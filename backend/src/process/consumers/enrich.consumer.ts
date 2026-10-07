@@ -5,6 +5,7 @@ import { DataSource, In } from 'typeorm';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { RunItem } from '../entities/run-item.entity.js';
 import { Run } from '../entities/run.entity.js';
+import { CallbackService } from '../../callback/callback.service.js';
 
 type EnrichJob = { run_id: string; seq: number; sku: string; item_id: string };
 type EnrichResult = { sku: string; price: number; stock: number };
@@ -20,6 +21,7 @@ export class EnrichConsumer extends WorkerHost implements OnModuleInit {
     @Inject(DataSource) private readonly database: DataSource,
     @InjectQueue('processing') private readonly queue: Queue,
     @InjectPinoLogger(EnrichConsumer.name) private readonly logger: PinoLogger,
+    @Inject(CallbackService) private readonly callbackService: CallbackService,
   ) {
     super();
   }
@@ -34,7 +36,11 @@ export class EnrichConsumer extends WorkerHost implements OnModuleInit {
     }
 
     const item = await this.loadItem(job.data);
-    if (item.status === 'completed' || item.status === 'invalid') return;
+    if (item.status === 'completed') {
+      await this.callbackService.enqueueIfReady(item.run_id);
+      return;
+    }
+    if (item.status === 'invalid') return;
 
     const { item_id, run_id, seq, sku } = job.data;
     const started = await this.database
@@ -209,5 +215,6 @@ export class EnrichConsumer extends WorkerHost implements OnModuleInit {
         .where({ run_id: item.run_id })
         .execute();
     });
+    await this.callbackService.enqueueIfReady(item.run_id);
   }
 }
