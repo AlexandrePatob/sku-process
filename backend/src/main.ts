@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { loadEnvFile } from 'node:process';
 import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common/pipes/index.js';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const envPath = fileURLToPath(new URL('../.env', import.meta.url));
@@ -19,6 +20,17 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('SKU Process API')
+    .setVersion('1.0')
+    .build();
+  SwaggerModule.setup(
+    'docs',
+    app,
+    SwaggerModule.createDocument(app, swaggerConfig),
+  );
+
   await app.listen(process.env.PORT ?? 3000);
 }
 await bootstrap();
