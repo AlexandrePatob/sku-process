@@ -1,29 +1,28 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import { App } from 'supertest/types.js';
-import { AppModule } from './../src/app.module.js';
+import { AppController } from '../src/app.controller.js';
+import { AppService } from '../src/app.service.js';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
-
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+describe('POST /check (e2e local)', () => {
+  it('devolve o token e rejeita token inválido pela rota HTTP', async () => {
+    const module = await Test.createTestingModule({
+      controllers: [AppController],
+      providers: [AppService],
     }).compile();
-
-    app = moduleFixture.createNestApplication();
+    const app = module.createNestApplication();
     await app.init();
-  });
-
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-
-  afterEach(async () => {
-    await app.close();
+    try {
+      await request(app.getHttpServer())
+        .post('/check')
+        .send({ token: ' a3f9... ' })
+        .expect(200)
+        .expect({ token: ' a3f9... ' });
+      await request(app.getHttpServer())
+        .post('/check')
+        .send({ token: '   ' })
+        .expect(400);
+    } finally {
+      await app.close();
+    }
   });
 });
