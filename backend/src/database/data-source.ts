@@ -5,8 +5,10 @@ import { fileURLToPath } from 'node:url';
 import { DataSource } from 'typeorm';
 import { Run } from '../process/entities/run.entity.js';
 import { RunItem } from '../process/entities/run-item.entity.js';
+import { CallbackAttempt } from '../callback/entities/callback-attempt.entity.js';
 import { CreateRuns1791244800000 } from './migrations/1791244800000-CreateRuns.js';
 import { CreateRunItems1791244800001 } from './migrations/1791244800001-CreateRunItems.js';
+import { CreateCallbackAttempts1791244800002 } from './migrations/1791244800002-CreateCallbackAttempts.js';
 
 const envPath = fileURLToPath(new URL('../../.env', import.meta.url));
 if (existsSync(envPath)) loadEnvFile(envPath);
@@ -19,6 +21,6 @@ export default new DataSource({
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
   synchronize: false,
-  entities: [Run, RunItem],
-  migrations: [CreateRuns1791244800000, CreateRunItems1791244800001],
+  entities: [Run, RunItem, CallbackAttempt],
+  migrations: [CreateRuns1791244800000, CreateRunItems1791244800001, CreateCallbackAttempts1791244800002],
 });

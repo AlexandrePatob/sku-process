@@ -3,6 +3,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { loggerOptions } from '../logging/logger-options.js';
 import { ProcessModule } from './process.module.js';
 import { EnrichConsumer } from './consumers/enrich.consumer.js';
+import { CallbackModule } from '../callback/callback.module.js';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { EnrichConsumer } from './consumers/enrich.consumer.js';
       useFactory: () => ({ pinoHttp: loggerOptions() }),
     }),
     ProcessModule,
+    CallbackModule,
   ],
   providers: [EnrichConsumer],
 })
