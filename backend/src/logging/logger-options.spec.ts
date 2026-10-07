@@ -1,6 +1,6 @@
 import { Writable } from 'node:stream';
 import express from 'express';
-import pinoHttp from 'pino-http';
+import { pinoHttp } from 'pino-http';
 import request from 'supertest';
 import { loggerOptions } from './logger-options.js';
 

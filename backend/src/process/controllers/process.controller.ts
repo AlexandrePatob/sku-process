@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Inject, Post } from '@nestjs/common';
 import { ProcessService } from '../services/process.service.js';
-import type { ProcessMessageDto } from '../dto/process-message.dto.js';
+import { ProcessMessageDto } from '../dto/process-message.dto.js';
 
 @Controller('process')
 export class ProcessController {
