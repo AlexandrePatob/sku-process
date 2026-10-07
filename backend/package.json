@@ -15,6 +15,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "start:worker": "npm run build && node dist/worker.js",
+    "migration:run": "npm run build && node ./node_modules/typeorm/cli.js migration:run -d ./dist/database/data-source.js",
     "lint": "oxlint --type-aware src/ test/",
     "test": "vitest run",
     "test:watch": "vitest",
