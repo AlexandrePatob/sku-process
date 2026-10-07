@@ -17,8 +17,7 @@ import { ProcessService } from './services/process.service.js';
           port: Number(process.env.REDIS_PORT ?? 6379),
           db: Number(process.env.REDIS_DB ?? 0),
           enableOfflineQueue: false,
-          maxRetriesPerRequest: 1,
-          commandTimeout: 400,
+          maxRetriesPerRequest: null,
           connectTimeout: 1000,
         },
       }),
@@ -27,5 +26,6 @@ import { ProcessService } from './services/process.service.js';
   ],
   controllers: [ProcessController],
   providers: [ProcessService],
+  exports: [BullModule],
 })
 export class ProcessModule {}
