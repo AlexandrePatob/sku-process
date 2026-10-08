@@ -5,7 +5,7 @@ import type {
   ReportsResponse,
 } from "../types/run";
 
-const baseUrl = (import.meta.env?.VITE_API_BASE_URL || "").replace(/\/$/, "");
+const baseUrl = (import.meta.env?.VITE_API_BASE_URL || "http://localhost:3000").replace(/\/$/, "");
 export const apiConfigured = Boolean(baseUrl);
 
 async function request<T>(path: string, method = "GET"): Promise<T> {

@@ -19,8 +19,8 @@ test("loads every reports page and normalizes processing for the list", async (c
   });
   const runs = await getReports();
   assert.deepEqual(urls, [
-    "/reports?limit=100&page=1",
-    "/reports?limit=100&page=2",
+    "http://localhost:3000/reports?limit=100&page=1",
+    "http://localhost:3000/reports?limit=100&page=2",
   ]);
   assert.deepEqual(
     runs.map((run) => [run.run_id, run.status]),
