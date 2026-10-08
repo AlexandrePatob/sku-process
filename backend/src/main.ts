@@ -13,6 +13,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
+  app.enableCors({
+    origin: /^https?:\/\/localhost(?::\d+)?$/,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'ngrok-skip-browser-warning'],
+  });
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
