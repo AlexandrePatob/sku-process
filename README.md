@@ -1,48 +1,49 @@
-# Processamento de SKUs
+<p align="center">
+</p>
 
-Projeto base para processamento assíncrono de lotes de SKUs, com API REST, filas e interface de acompanhamento.
+<h1 align="center">Processamento de SKUs em lote</h1>
 
-## Estrutura
+<p align="center">
+  Inicie lotes, acompanhe o progresso e consulte os resultados em um só painel.
+</p>
 
-- `backend/` — API e workers em NestJS.
-- `frontend/` — Interface em React.
-- `docker-compose.yml` — Ambiente Docker, previsto para a próxima etapa.
+<p align="center">
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-24.18.0-339933?logo=nodedotjs&logoColor=white" alt="Node.js 24.18.0" /></a>
+  <a href="https://ngrok.com/"><img src="https://img.shields.io/badge/ngrok-3.39.9-1F1E37?logo=ngrok&logoColor=white" alt="ngrok 3.39.9" /></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-29.1.3-2496ED?logo=docker&logoColor=white" alt="Docker 29.1.3" /></a>
+  <img src="https://img.shields.io/badge/Compose-2.40.3-2496ED?logo=docker&logoColor=white" alt="Docker Compose 2.40.3" />
+</p>
 
-## Stack
+<p align="center">
+  <img src="https://img.shields.io/badge/Testes-passando-2E7D32?logo=checkmarx&logoColor=white" alt="Testes passando na validação local" />
+  <img src="https://img.shields.io/badge/Build-aprovado-2E7D32" alt="Build aprovado na validação local" />
+  <img src="https://img.shields.io/badge/Lint-sem_erros-2E7D32" alt="Lint sem erros na validação local" />
+</p>
 
-- Node.js 24 e TypeScript
-- NestJS e React
-- BullMQ e Redis
-- PostgreSQL e TypeORM
-- OpenAPI / Swagger
-- Jest e Pino
+Badges de validação local em 08/10/2026.
 
-## Como rodar 
+API em NestJS, painel em React e processamento em filas BullMQ.
 
-1. Copie `backend/.env.example` para `backend/.env` e configure as variáveis do ambiente.
-``
-PLATFORM_BASE_URL=Url do servico externo
-``
-2. Na raiz, rode `docker compose up -d` para subir PostgreSQL, Redis e API.
-3. Rode `ngrok http 3000` e use a URL gerada para registrar o webhook (/register). Coloque o `cid` e o `token` recebidos em `backend/.env`.
-``
-PLATFORM_CID=
-PLATFORM_TOKEN=
-``
-4. Rode `docker compose up -d worker` ou `npm run start:worker`. Depois, chame `POST http://localhost:3000/start-process`. A API usa `PLATFORM_CID` e `PLATFORM_TOKEN` do `.env`; reinicie a API após alterar essas variáveis.
-Local via swagger:
-http://localhost:3000/docs#/StartProcess/StartProcessController_start
+## Como rodar
 
-via Curl:
-```sh
-curl -X POST http://localhost:3000/start-process
-```
+1. Copie `backend/.env.example` para `backend/.env` e preencha `PLATFORM_BASE_URL`.
+2. Suba o front, a API e os serviços:
 
-A API fica em `http://localhost:3000` e o Swagger em `http://localhost:3000/docs`.
+   ```sh
+   docker compose up -d --build
+   ```
 
-## Dependencias
+3. Rode `ngrok http 3000`, registre a URL pública com `/register` na plataforma e preencha `PLATFORM_CID` e `PLATFORM_TOKEN` no `.env` do backend.
+4. Aplique as credenciais e inicie o worker:
 
-- Node
-- Docker
-- Ngrok
-- Npm 
+   ```sh
+   docker compose --profile registered up -d --force-recreate api worker
+   ```
+
+O front aponta para `http://localhost:3000` por padrão. Para usar outra URL, defina `VITE_API_BASE_URL` em `frontend/.env` e recrie o serviço com `docker compose up -d --force-recreate frontend`.
+
+Abra o [painel](http://localhost:5173) e clique em **Iniciar processamento**. Os lotes são atualizados a cada 5 segundos até finalizar.
+
+- Api: [localhost:3000](http://localhost:3000)
+- Swagger: [localhost:3000/docs](http://localhost:3000/docs).
+- Front: [localhost:5173](http://localhost:5173)
