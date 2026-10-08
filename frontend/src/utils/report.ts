@@ -1,0 +1,56 @@
+import type { ReportValue, ReportData } from "../types/report";
+
+export const reportLabels: Record<string, string> = {
+  ack: "Tempo de confirmação",
+  idempotency: "Proteção contra duplicação",
+  retry: "Recuperação de falhas",
+  concurrency: "Concorrência",
+  result: "Validação dos resultados",
+  breakdown: "Composição da nota",
+  score: "Nota",
+  attempt: "Tentativa",
+  duration_ms: "Duração",
+  target_ms: "Meta",
+  measured: "Confirmações medidas",
+  p50: "Mediana",
+  p95: "Percentil 95",
+  worst: "Maior tempo",
+  seq: "Sequência",
+  ms: "Tempo",
+  over_target: "Acima da meta",
+  failed: "Falhas",
+  warmup_ms: "Aquecimento",
+  pass: "Verificação",
+  duplicate_seq: "Sequência duplicada",
+  duplicate_sku: "SKU duplicado",
+  enrich_calls: "Consultas realizadas",
+  expected_calls: "Consultas esperadas",
+  forced_500: "Falhas simuladas",
+  skus_with_500: "SKUs com falha",
+  recovered: "Recuperados",
+  limit: "Limite simultâneo",
+  got_429: "Respostas de limite atingido",
+  skus_stuck_after_429: "SKUs sem recuperação",
+  expected: "Esperados",
+  matched: "Correspondentes",
+  mismatched: "Divergentes",
+  missing: "Ausentes",
+  unknown: "Desconhecidos",
+  weight: "Peso",
+  earned: "Pontos obtidos",
+  message: "Mensagem",
+  error: "Erro",
+  ok: "Resultado",
+};
+export const reportTimeFields = new Set([
+  "duration_ms",
+  "target_ms",
+  "p50",
+  "p95",
+  "ms",
+  "warmup_ms",
+]);
+
+export function isReportObject(value: ReportValue): value is ReportData {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
