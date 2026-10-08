@@ -4,6 +4,7 @@ import { loggerOptions } from '../logging/logger-options.js';
 import { ProcessModule } from './process.module.js';
 import { EnrichConsumer } from './consumers/enrich.consumer.js';
 import { CallbackModule } from '../callback/callback.module.js';
+import { CallbackConsumer } from '../callback/callback.consumer.js';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { CallbackModule } from '../callback/callback.module.js';
     ProcessModule,
     CallbackModule,
   ],
-  providers: [EnrichConsumer],
+  providers: [EnrichConsumer, CallbackConsumer],
 })
 export class WorkerModule {}

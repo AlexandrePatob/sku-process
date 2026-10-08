@@ -3,8 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { DataSource } from 'typeorm';
 import { RunItem } from '../process/entities/run-item.entity.js';
-
-export const CALLBACK_TOTAL = 20;
+import { Run } from '../process/entities/run.entity.js';
 
 @Injectable()
 export class CallbackService {
@@ -14,11 +13,14 @@ export class CallbackService {
   ) {}
 
   async enqueueIfReady(runId: string): Promise<void> {
+    const run = await this.database.getRepository(Run).findOneBy({ run_id: runId });
+    if (!run?.expected_total) return;
+
     const completed = await this.database.getRepository(RunItem).countBy({
       run_id: runId,
       status: 'completed',
     });
-    if (completed !== CALLBACK_TOTAL) return;
+    if (completed !== run.expected_total) return;
 
     await this.queue.add(
       'send-callback',

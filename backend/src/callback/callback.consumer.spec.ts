@@ -21,7 +21,7 @@ describe('CallbackConsumer', () => {
       stock: seq,
     }));
     const runs = {
-      findOneBy: vi.fn().mockResolvedValue({ status }),
+      findOneBy: vi.fn().mockResolvedValue({ status, expected_total: 20 }),
       update: vi.fn().mockResolvedValue(undefined),
     };
     const runItems = { find: vi.fn().mockResolvedValue(items) };

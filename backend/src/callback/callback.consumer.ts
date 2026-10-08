@@ -6,7 +6,6 @@ import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { Run } from '../process/entities/run.entity.js';
 import { RunItem } from '../process/entities/run-item.entity.js';
 import { CallbackAttempt } from './entities/callback-attempt.entity.js';
-import { CALLBACK_TOTAL } from './callback.service.js';
 
 @Processor('callback')
 export class CallbackConsumer extends WorkerHost {
@@ -36,7 +35,7 @@ export class CallbackConsumer extends WorkerHost {
       where: { run_id: runId, status: 'completed' },
       order: { seq: 'ASC' },
     });
-    if (items.length !== CALLBACK_TOTAL) {
+    if (!run.expected_total || items.length !== run.expected_total) {
       throw new Error('Lote incompleto');
     }
 
