@@ -180,6 +180,7 @@ export class EnrichConsumer extends WorkerHost implements OnModuleInit {
       .update(RunItem)
       .set({
         status: final ? 'failed' : 'pending',
+        finished_at: final ? () => 'now()' : null,
         last_error: messageError,
         updated_at: () => 'now()',
       })

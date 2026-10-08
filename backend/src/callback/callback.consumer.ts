@@ -42,9 +42,6 @@ export class CallbackConsumer extends WorkerHost {
     const baseUrl = process.env.PLATFORM_BASE_URL;
     const cid = process.env.PLATFORM_CID;
     const token = process.env.PLATFORM_TOKEN;
-    if (!baseUrl || !cid || !token) {
-      throw new UnrecoverableError('Configuração da plataforma ausente');
-    }
 
     const attempt = await this.database.getRepository(CallbackAttempt).save({
       run_id: runId,
@@ -52,6 +49,9 @@ export class CallbackConsumer extends WorkerHost {
     });
 
     try {
+      if (!baseUrl || !cid || !token) {
+        throw new UnrecoverableError('Configuração da plataforma ausente');
+      }
       const response = await fetch(
         new URL('callback', baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`),
         {
@@ -98,6 +98,19 @@ export class CallbackConsumer extends WorkerHost {
         error: error instanceof Error ? error.message : String(error),
         finished_at: new Date(),
       });
+      if (
+        error instanceof UnrecoverableError ||
+        (job.attemptsMade ?? 0) + 1 >= (job.opts?.attempts ?? 5)
+      ) {
+        await this.database.getRepository(Run).update(
+          { run_id: runId },
+          {
+            status: 'failed',
+            finished_at: new Date(),
+            updated_at: new Date(),
+          },
+        );
+      }
       this.logger.error(
         { err: error, run_id: runId, job_id: job.id },
         'Falha no callback',

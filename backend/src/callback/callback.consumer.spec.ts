@@ -113,4 +113,26 @@ describe('CallbackConsumer', () => {
     expect(fetchMock).not.toHaveBeenCalled();
     expect(attempts.save).not.toHaveBeenCalled();
   });
+
+  it('encerra o lote ao esgotar as tentativas do callback', async () => {
+    const { consumer, runs } = setup();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response('erro', { status: 503 })),
+    );
+    await expect(
+      consumer.process({
+        ...job,
+        attemptsMade: 4,
+        opts: { attempts: 5 },
+      } as Job<{ run_id: string }>),
+    ).rejects.toThrow('HTTP 503');
+    expect(runs.update).toHaveBeenCalledWith(
+      { run_id: 'run-1' },
+      expect.objectContaining({
+        status: 'failed',
+        finished_at: expect.any(Date),
+      }),
+    );
+  });
 });

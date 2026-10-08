@@ -7,6 +7,8 @@ import { ProcessService } from './services/process.service.js';
 import { StartProcessController } from './controllers/start-process.controller.js';
 import { StartProcessService } from './services/start-process.service.js';
 import { CallbackModule } from '../callback/callback.module.js';
+import { ReportsController } from './controllers/reports.controller.js';
+import { ReportsService } from './services/reports.service.js';
 
 @Module({
   imports: [
@@ -28,8 +30,8 @@ import { CallbackModule } from '../callback/callback.module.js';
     BullModule.registerQueue({ name: 'processing' }),
     CallbackModule,
   ],
-  controllers: [ProcessController, StartProcessController],
-  providers: [ProcessService, StartProcessService],
+  controllers: [ProcessController, StartProcessController, ReportsController],
+  providers: [ProcessService, StartProcessService, ReportsService],
   exports: [BullModule],
 })
 export class ProcessModule {}
