@@ -24,6 +24,8 @@ Badges de validação local em 08/10/2026.
 
 API em NestJS, painel em React e processamento em filas BullMQ.
 
+![Painel do front para iniciar lotes, acompanhar o progresso e consultar relatórios](image.png)
+
 ## Como rodar
 
 1. Copie `backend/.env.example` para `backend/.env` e preencha `PLATFORM_BASE_URL`.
