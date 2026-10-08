@@ -17,10 +17,14 @@ export class StartProcessService {
     @Inject(CallbackService) private readonly callbackService: CallbackService,
   ) {}
 
-  async start(cid: string, token: string): Promise<BurstResponse> {
+  async start(): Promise<BurstResponse> {
     const baseUrl = process.env.PLATFORM_BASE_URL;
-    if (!baseUrl) {
-      throw new ServiceUnavailableException('Configure PLATFORM_BASE_URL');
+    const cid = process.env.PLATFORM_CID;
+    const token = process.env.PLATFORM_TOKEN;
+    if (!baseUrl || !cid || !token) {
+      throw new ServiceUnavailableException(
+        'Configure PLATFORM_BASE_URL, PLATFORM_CID e PLATFORM_TOKEN',
+      );
     }
 
     const url = new URL(

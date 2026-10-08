@@ -10,6 +10,8 @@ describe('StartProcessService', () => {
 
   it('salva o total recebido antes de verificar o callback', async () => {
     vi.stubEnv('PLATFORM_BASE_URL', 'https://platform.invalid/');
+    vi.stubEnv('PLATFORM_CID', 'cid-1');
+    vi.stubEnv('PLATFORM_TOKEN', 'token-1');
     const fetchMock = vi
       .fn()
       .mockResolvedValue(Response.json({ run_id: 'run-1', total: 3 }));
@@ -23,7 +25,7 @@ describe('StartProcessService', () => {
       { enqueueIfReady } as unknown as CallbackService,
     );
 
-    await expect(service.start('cid-1', 'token-1')).resolves.toEqual({
+    await expect(service.start()).resolves.toEqual({
       run_id: 'run-1',
       total: 3,
     });
@@ -39,4 +41,25 @@ describe('StartProcessService', () => {
       enqueueIfReady.mock.invocationCallOrder[0],
     );
   });
+
+  it.each(['PLATFORM_BASE_URL', 'PLATFORM_CID', 'PLATFORM_TOKEN'])(
+    'rejeita configuração sem %s antes de chamar a plataforma',
+    async (missing) => {
+      vi.stubEnv('PLATFORM_BASE_URL', 'https://platform.invalid/');
+      vi.stubEnv('PLATFORM_CID', 'cid-1');
+      vi.stubEnv('PLATFORM_TOKEN', 'token-1');
+      vi.stubEnv(missing, '');
+      const fetchMock = vi.fn();
+      vi.stubGlobal('fetch', fetchMock);
+      const service = new StartProcessService(
+        {} as DataSource,
+        {} as CallbackService,
+      );
+
+      await expect(service.start()).rejects.toThrow(
+        'Configure PLATFORM_BASE_URL, PLATFORM_CID e PLATFORM_TOKEN',
+      );
+      expect(fetchMock).not.toHaveBeenCalled();
+    },
+  );
 });

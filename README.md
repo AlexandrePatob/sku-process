@@ -29,15 +29,14 @@ PLATFORM_BASE_URL=Url do servico externo
 PLATFORM_CID=
 PLATFORM_TOKEN=
 ``
-4. Rode `docker compose up -d worker` ou `npm run start:worker'. Depois, chame `POST http://localhost:3000/start-process` com os headers `x-cid` e `x-token` recebidos no registro.
+4. Rode `docker compose up -d worker` ou `npm run start:worker`. Depois, chame `POST http://localhost:3000/start-process`. A API usa `PLATFORM_CID` e `PLATFORM_TOKEN` do `.env`; reinicie a API após alterar essas variáveis.
 Local via swagger:
 http://localhost:3000/docs#/StartProcess/StartProcessController_start
 
 via Curl:
-``curl -X POST http://localhost:3000/start-process \
-  -H "x-cid: SEU_CID" \
-  -H "x-token: SEU_TOKEN"
-``
+```sh
+curl -X POST http://localhost:3000/start-process
+```
 
 A API fica em `http://localhost:3000` e o Swagger em `http://localhost:3000/docs`.
 
